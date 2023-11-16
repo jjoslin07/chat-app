@@ -20,6 +20,10 @@ const ChatPage = ({ socket }) => {
 		// 👇️ scroll to bottom every time messages change
 		lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
 	}, [messages]);
+	const handleClearTypingStatus = () => {
+		// Clear the typing status when called
+		setTypingStatus('');
+	};
 
 	return (
 		<div className="chat">
@@ -29,6 +33,7 @@ const ChatPage = ({ socket }) => {
 					messages={messages}
 					typingStatus={typingStatus}
 					lastMessageRef={lastMessageRef}
+					handleClearTypingStatus={handleClearTypingStatus}
 				/>
 				<ChatFooter socket={socket} />
 			</div>

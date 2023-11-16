@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ChatBody = ({ messages, typingStatus, lastMessageRef }) => {
+const ChatBody = ({
+	messages,
+	typingStatus,
+	lastMessageRef,
+	handleClearTypingStatus,
+}) => {
 	const navigate = useNavigate();
 
 	const handleLeaveChat = () => {
@@ -9,6 +14,19 @@ const ChatBody = ({ messages, typingStatus, lastMessageRef }) => {
 		navigate('/');
 		window.location.reload();
 	};
+
+	useEffect(() => {
+		// Reset typing status after 3 seconds of inactivity
+		const timeoutId = setTimeout(() => {
+			// Clear the typing status when there's no typing
+			typingStatus && handleClearTypingStatus();
+		}, 2000);
+
+		return () => {
+			// Clear the timeout on component unmount or when a new message is received
+			clearTimeout(timeoutId);
+		};
+	}, [typingStatus, handleClearTypingStatus]);
 
 	return (
 		<>
@@ -38,9 +56,11 @@ const ChatBody = ({ messages, typingStatus, lastMessageRef }) => {
 					)
 				)}
 
-				<div className="message__status">
-					<p>{typingStatus}</p>
-				</div>
+				{typingStatus && (
+					<div className="message__status">
+						<p>{typingStatus}</p>
+					</div>
+				)}
 				<div ref={lastMessageRef} />
 			</div>
 		</>
